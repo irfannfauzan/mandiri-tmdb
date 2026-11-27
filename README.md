@@ -14,12 +14,19 @@ iOS assessment project using the TMDB API, built with VIPER + Clean Architecture
 
 * Swift + UIKit
 * VIPER + Clean Architecture
-* URLSession with async/await
-* NSCache for image caching
+* Moya (Alamofire) with async/await
+* Kingfisher for image loading and caching
 * UICollectionView and UITableView with custom cells
 * WKWebView for the trailer
 * TMDB API
 
+## Dependencies
+
+Installed with Swift Package Manager:
+
+* [Moya](https://github.com/Moya/Moya)
+* [Alamofire](https://github.com/Alamofire/Alamofire)
+* [Kingfisher](https://github.com/onevcat/Kingfisher)
 
 ## Screenshot
 
