@@ -10,7 +10,7 @@ import UIKit
 enum GenreModuleBuilder {
 
     static func build() -> UIViewController {
-        let apiClient = APIClient()
+        let apiClient = MoyaAPIClient()
         let repository = GenreRepository(apiClient: apiClient)
         let useCase = FetchGenresUseCase(repository: repository)
         

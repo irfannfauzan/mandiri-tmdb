@@ -6,15 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class MovieCell: UICollectionViewCell {
 
     // MARK: - Properties
 
     static let identifier = "MovieCell"
-
-    private var loadTask: Task<Void, Never>?
-    private var currentURL: URL?
 
     // MARK: - UI
 
@@ -82,9 +80,7 @@ final class MovieCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        loadTask?.cancel()
-        loadTask = nil
-        currentURL = nil
+        posterView.kf.cancelDownloadTask()
         posterView.image = nil
     }
 
@@ -95,18 +91,9 @@ final class MovieCell: UICollectionViewCell {
         let year = movie.releaseYear.isEmpty ? "-" : movie.releaseYear
         metaLabel.text = "\(year) · ★ \(String(format: "%.1f", movie.rating))"
 
-        currentURL = movie.posterURL
-        guard let url = movie.posterURL else { return }
-
-        if let cached = ImageLoader.shared.cachedImage(for: url) {
-            posterView.image = cached
-            return
-        }
-
-        loadTask = Task { [weak self] in
-            let image = await ImageLoader.shared.load(url)
-            guard !Task.isCancelled, self?.currentURL == url else { return }
-            self?.posterView.image = image
-        }
+        posterView.kf.setImage(
+            with: movie.posterURL,
+            options: [.transition(.fade(0.2))]
+        )
     }
 }

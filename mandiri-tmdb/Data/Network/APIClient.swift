@@ -6,56 +6,53 @@
 //
 
 import Foundation
+import Moya
+import Alamofire
 
 protocol APIClientProtocol {
-    func request<T: Decodable>(_ endpoint: Endpoint) async throws -> T
+    func request<T: Decodable>(_ target: TMDBAPI) async throws -> T
 }
 
-final class APIClient: APIClientProtocol {
-    private let session: URLSession
+final class MoyaAPIClient: APIClientProtocol {
+
+    private let provider: MoyaProvider<TMDBAPI>
     private let decoder: JSONDecoder
 
-    init(session: URLSession = NetworkSession.api, decoder: JSONDecoder = JSONDecoder()) {
-        self.session = session
+    init(provider: MoyaProvider<TMDBAPI> = MoyaProvider<TMDBAPI>(),
+         decoder: JSONDecoder = JSONDecoder()) {
+        self.provider = provider
         self.decoder = decoder
     }
 
-    func request<T: Decodable>(_ endpoint: Endpoint) async throws -> T {
-        guard let url = endpoint.url else { throw APIError.invalidURL }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "accept")
-        request.setValue("Bearer \(SecretKey.tmdbToken)", forHTTPHeaderField: "Authorization")
-
-        #if DEBUG
-        print("[GET] \(url.absoluteString)")
-        #endif
-
-        let data: Data
-        let response: URLResponse
-        do {
-            (data, response) = try await session.data(for: request)
-        } catch let error as URLError {
-            throw APIError.transportError(error)
+    func request<T: Decodable>(_ target: TMDBAPI) async throws -> T {
+        let (data, statusCode): (Data, Int) = try await withCheckedThrowingContinuation { continuation in
+            provider.request(target) { result in
+                switch result {
+                case .success(let response):
+                    continuation.resume(returning: (response.data, response.statusCode))
+                case .failure(let error):
+                    continuation.resume(throwing: Self.mapError(error))
+                }
+            }
         }
 
-        guard let http = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
-        }
-
-        guard (200...299).contains(http.statusCode) else {
+        guard (200...299).contains(statusCode) else {
             let message = (try? decoder.decode(TMDBErrorDTO.self, from: data))?.statusMessage
-            throw APIError.httpStatus(http.statusCode, message: message)
+            throw APIError.httpStatus(statusCode, message: message)
         }
-
+        
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
-            #if DEBUG
-            print("Decoding error:", error)
-            #endif
             throw APIError.decoding(error)
         }
+    }
+
+    private nonisolated static func mapError(_ error: MoyaError) -> Error {
+        if case .underlying(let underlying, _) = error,
+           let urlError = (underlying.asAFError?.underlyingError ?? underlying) as? URLError {
+            return APIError.transportError(urlError)
+        }
+        return APIError.invalidResponse
     }
 }

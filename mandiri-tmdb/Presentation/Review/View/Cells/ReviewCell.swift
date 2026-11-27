@@ -6,15 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ReviewCell: UITableViewCell {
 
     // MARK: - Properties
 
     static let identifier = "ReviewCell"
-
-    private var avatarTask: Task<Void, Never>?
-    private var currentAvatarURL: URL?
 
     // MARK: - UI
 
@@ -133,9 +131,7 @@ final class ReviewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        avatarTask?.cancel()
-        avatarTask = nil
-        currentAvatarURL = nil
+        avatarView.kf.cancelDownloadTask()
         avatarView.image = nil
     }
 
@@ -154,19 +150,10 @@ final class ReviewCell: UITableViewCell {
             ratingLabel.isHidden = true
         }
 
-        avatarView.image = UIImage(systemName: "person.crop.circle.fill")
-        currentAvatarURL = review.avatarURL
-        guard let url = review.avatarURL else { return }
-
-        if let cached = ImageLoader.shared.cachedImage(for: url) {
-            avatarView.image = cached
-            return
-        }
-
-        avatarTask = Task { [weak self] in
-            let image = await ImageLoader.shared.load(url)
-            guard !Task.isCancelled, self?.currentAvatarURL == url, let image else { return }
-            self?.avatarView.image = image
-        }
+        avatarView.kf.setImage(
+            with: review.avatarURL,
+            placeholder: UIImage(systemName: "person.crop.circle.fill"),
+            options: [.transition(.fade(0.2))]
+        )
     }
 }

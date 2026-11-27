@@ -5,6 +5,7 @@
 //  Created by Vokal-Ican on 16/11/26.
 //
 
+// Old image loader, now using Kingfisher
 import UIKit
 
 final class ImageLoader {

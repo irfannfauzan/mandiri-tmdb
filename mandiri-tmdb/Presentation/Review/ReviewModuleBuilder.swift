@@ -10,7 +10,7 @@ import UIKit
 enum ReviewsModuleBuilder {
 
     static func build(movieId: Int, movieTitle: String) -> UIViewController {
-        let apiClient = APIClient()
+        let apiClient = MoyaAPIClient()
         let repository = ReviewRepository(apiClient: apiClient)
         let useCase = FetchReviewsUseCase(repository: repository)
 

@@ -10,7 +10,7 @@ import UIKit
 enum MovieListModuleBuilder {
 
     static func build(genre: Genre) -> UIViewController {
-        let apiClient = APIClient()
+        let apiClient = MoyaAPIClient()
         let repository = MovieRepository(apiClient: apiClient)
         let useCase = FetchMoviesByGenreUseCase(repository: repository)
 

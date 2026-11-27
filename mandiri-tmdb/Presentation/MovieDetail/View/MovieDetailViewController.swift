@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol MovieDetailViewProtocol: AnyObject {
     func showLoading()
@@ -14,20 +15,19 @@ protocol MovieDetailViewProtocol: AnyObject {
 }
 
 final class MovieDetailViewController: UIViewController {
-
+    
     // MARK: - Properties
-
+    
     private let presenter: MovieDetailPresenterProtocol
-    private var imageTasks: [Task<Void, Never>] = []
-
+    
     // MARK: - UI
-
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-
+    
     private let backdropView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -36,7 +36,7 @@ final class MovieDetailViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private let posterView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -48,7 +48,7 @@ final class MovieDetailViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 22, weight: .bold)
@@ -56,7 +56,7 @@ final class MovieDetailViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private let metaLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13)
@@ -64,7 +64,7 @@ final class MovieDetailViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private let genresLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .medium)
@@ -72,7 +72,7 @@ final class MovieDetailViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private lazy var headerTextStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [titleLabel, metaLabel, genresLabel])
         stack.axis = .vertical
@@ -80,7 +80,7 @@ final class MovieDetailViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
+    
     private lazy var trailerButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "Watch trailer"
@@ -93,7 +93,7 @@ final class MovieDetailViewController: UIViewController {
             self?.presenter.didTapTrailer()
         })
     }()
-
+    
     private lazy var reviewsButton: UIButton = {
         var config = UIButton.Configuration.tinted()
         config.title = "Reviews"
@@ -106,7 +106,7 @@ final class MovieDetailViewController: UIViewController {
             self?.presenter.didTapReviews()
         })
     }()
-
+    
     private lazy var buttonStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [trailerButton, reviewsButton])
         stack.axis = .horizontal
@@ -114,7 +114,7 @@ final class MovieDetailViewController: UIViewController {
         stack.distribution = .fillEqually
         return stack
     }()
-
+    
     private let taglineLabel: UILabel = {
         let label = UILabel()
         label.font = .italicSystemFont(ofSize: 15)
@@ -122,7 +122,7 @@ final class MovieDetailViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private let overviewTitle: UILabel = {
         let label = UILabel()
         label.text = "Overview"
@@ -130,7 +130,7 @@ final class MovieDetailViewController: UIViewController {
         label.textColor = AppColors.textPrimary
         return label
     }()
-
+    
     private let overviewLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15)
@@ -138,7 +138,7 @@ final class MovieDetailViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private lazy var bodyStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [buttonStack, taglineLabel, overviewTitle, overviewLabel])
         stack.axis = .vertical
@@ -147,7 +147,7 @@ final class MovieDetailViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
+    
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = AppColors.accent
@@ -155,7 +155,7 @@ final class MovieDetailViewController: UIViewController {
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
-
+    
     private let messageLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -163,7 +163,7 @@ final class MovieDetailViewController: UIViewController {
         label.textColor = AppColors.textSecondary
         return label
     }()
-
+    
     private lazy var retryButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "Try again"
@@ -174,7 +174,7 @@ final class MovieDetailViewController: UIViewController {
             self?.presenter.didTapRetry()
         })
     }()
-
+    
     private lazy var messageStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [messageLabel, retryButton])
         stack.axis = .vertical
@@ -183,24 +183,21 @@ final class MovieDetailViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
+    
     // MARK: - Init
-
+    
     init(presenter: MovieDetailPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    deinit {
-        imageTasks.forEach { $0.cancel() }
-    }
-
+    
+    
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.largeTitleDisplayMode = .never
@@ -208,9 +205,9 @@ final class MovieDetailViewController: UIViewController {
         setupLayout()
         presenter.viewDidLoad()
     }
-
+    
     // MARK: - Setup
-
+    
     private func setupLayout() {
         view.addSubview(scrollView)
         scrollView.addSubview(backdropView)
@@ -219,63 +216,54 @@ final class MovieDetailViewController: UIViewController {
         scrollView.addSubview(bodyStack)
         view.addSubview(loadingIndicator)
         view.addSubview(messageStack)
-
+        
         let content = scrollView.contentLayoutGuide
         let frame = scrollView.frameLayoutGuide
-
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
+            
             backdropView.topAnchor.constraint(equalTo: content.topAnchor),
             backdropView.leadingAnchor.constraint(equalTo: frame.leadingAnchor),
             backdropView.trailingAnchor.constraint(equalTo: frame.trailingAnchor),
             backdropView.heightAnchor.constraint(equalTo: backdropView.widthAnchor, multiplier: 9.0 / 16),
-
+            
             posterView.leadingAnchor.constraint(equalTo: frame.leadingAnchor, constant: 16),
             posterView.topAnchor.constraint(equalTo: backdropView.bottomAnchor, constant: -50),
             posterView.widthAnchor.constraint(equalToConstant: 100),
             posterView.heightAnchor.constraint(equalToConstant: 150),
-
+            
             headerTextStack.leadingAnchor.constraint(equalTo: posterView.trailingAnchor, constant: 14),
             headerTextStack.trailingAnchor.constraint(equalTo: frame.trailingAnchor, constant: -16),
             headerTextStack.topAnchor.constraint(equalTo: backdropView.bottomAnchor, constant: 12),
-
+            
             bodyStack.topAnchor.constraint(greaterThanOrEqualTo: posterView.bottomAnchor, constant: 20),
             bodyStack.topAnchor.constraint(greaterThanOrEqualTo: headerTextStack.bottomAnchor, constant: 20),
             bodyStack.leadingAnchor.constraint(equalTo: frame.leadingAnchor, constant: 16),
             bodyStack.trailingAnchor.constraint(equalTo: frame.trailingAnchor, constant: -16),
             bodyStack.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -32),
-
+            
             trailerButton.heightAnchor.constraint(equalToConstant: 44),
-
+            
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-
+            
             messageStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             messageStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             messageStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32)
         ])
     }
-
+    
     // MARK: - Helpers
-
+    
     private func loadImage(_ url: URL?, into imageView: UIImageView) {
-        guard let url else { return }
-
-        if let cached = ImageLoader.shared.cachedImage(for: url) {
-            imageView.image = cached
-            return
-        }
-
-        let task = Task { [weak imageView] in
-            let image = await ImageLoader.shared.load(url)
-            guard !Task.isCancelled else { return }
-            imageView?.image = image
-        }
-        imageTasks.append(task)
+        imageView.kf.setImage(
+            with: url,
+            options: [.transition(.fade(0.2))]
+        )
     }
 }
 

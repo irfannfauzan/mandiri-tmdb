@@ -10,7 +10,7 @@ import UIKit
 enum MovieDetailModuleBuilder {
 
     static func build(movieId: Int) -> UIViewController {
-        let apiClient = APIClient()
+        let apiClient = MoyaAPIClient()
         let repository = MovieDetailRepository(apiClient: apiClient)
         let detailUseCase = FetchMovieDetailUseCase(repository: repository)
         let trailerUseCase = FetchMovieTrailerUseCase(repository: repository)

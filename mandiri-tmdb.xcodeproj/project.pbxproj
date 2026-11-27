@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C15EF52130B930C100758F8C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = C15EF52030B930C100758F8C /* Kingfisher */; };
+		C15EF52430B930D700758F8C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = C15EF52330B930D700758F8C /* Alamofire */; };
+		C15EF52730B930F800758F8C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = C15EF52630B930F800758F8C /* Moya */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		C1CE253730AAEDE300C4F1D6 /* mandiri-tmdb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mandiri-tmdb.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C15EF52130B930C100758F8C /* Kingfisher in Frameworks */,
+				C15EF52430B930D700758F8C /* Alamofire in Frameworks */,
+				C15EF52730B930F800758F8C /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +87,9 @@
 			);
 			name = "mandiri-tmdb";
 			packageProductDependencies = (
+				C15EF52030B930C100758F8C /* Kingfisher */,
+				C15EF52330B930D700758F8C /* Alamofire */,
+				C15EF52630B930F800758F8C /* Moya */,
 			);
 			productName = "mandiri-tmdb";
 			productReference = C1CE253730AAEDE300C4F1D6 /* mandiri-tmdb.app */;
@@ -107,6 +119,11 @@
 			);
 			mainGroup = C1CE252E30AAEDE300C4F1D6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C15EF51F30B930C100758F8C /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				C15EF52230B930D700758F8C /* XCRemoteSwiftPackageReference "Alamofire" */,
+				C15EF52530B930F800758F8C /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C1CE253830AAEDE300C4F1D6 /* Products */;
 			projectDirPath = "";
@@ -345,6 +362,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C15EF51F30B930C100758F8C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.16.0;
+			};
+		};
+		C15EF52230B930D700758F8C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.12.2;
+			};
+		};
+		C15EF52530B930F800758F8C /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C15EF52030B930C100758F8C /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C15EF51F30B930C100758F8C /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		C15EF52330B930D700758F8C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C15EF52230B930D700758F8C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		C15EF52630B930F800758F8C /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C15EF52530B930F800758F8C /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C1CE252F30AAEDE300C4F1D6 /* Project object */;
 }
